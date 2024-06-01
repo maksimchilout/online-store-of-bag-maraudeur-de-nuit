@@ -1,0 +1,223 @@
+@use 'sass:math';
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bad+Script&family=Montserrat:wght@300;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bellota:wght@300;400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bona+Nova:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Alumni+Sans+Pinstripe&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Unicase&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Viaoda+Libre&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Spectral+SC&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+SC:wght@400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Viaoda+Libre&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orelega+One&display=swap');
+
+
+@function percent($px, $from) {
+  $result: math.div($px, $from) * 100%;
+  @return $result;
+}
+
+//REM
+@function rem($px) {
+  $result: math.div($px, 16) + rem;
+  @return $result;
+}
+
+//EM
+@function em($px, $current: 16) {
+  $result: math.div($px, $current) + em;
+  @return $result;
+}
+
+@mixin adaptiveValue($property, $startSize, $minSize, $widthFrom: $containerWidth, $widthTo: $minWidth, $keepSize: 0) {
+  @if ($widthFrom == $containerWidth and $maxWidthContainer == 0) {
+    $widthFrom: $maxWidth;
+  }
+
+  $widthFromMedia: em($widthFrom);
+  $widthToMedia: em($widthTo);
+
+
+  $slope: math.div(($startSize - $minSize), ($widthFrom - $widthTo));
+  $yIntersection: -$widthTo * $slope + $minSize;
+  $flyValue: #{rem($yIntersection)}" + " #{$slope * 100}vw;
+
+  $propertyValue: #{"clamp(" rem($minSize) "," $flyValue "," rem($startSize) ")"};
+
+  @if $widthFrom == $containerWidth or $widthFrom == $maxWidth or $keepSize == 1 or $keepSize == 2 {
+    @media (min-width: $widthFromMedia) {
+      #{$property}: rem($startSize);
+    }
+  }
+  @media (min-width: $widthToMedia) and (max-width: $widthFromMedia) {
+    #{$property}: $propertyValue;
+  }
+  @if $widthTo == $minWidth or $keepSize == 1 or $keepSize == 3 {
+    @media (max-width: $widthToMedia) {
+      #{$property}: rem($minSize);
+    }
+  }
+}
+
+
+$minWidth: 320;
+$maxWidth: 1240;
+$maxWidthContainer: 1240;
+$containerPadding: 20;
+$containerWidth: $maxWidthContainer + $containerPadding;
+$pc: em($containerWidth);
+$tablet: em(991.98);
+$mobile: em(767.98);
+$mobileSmall: em(479.98);
+
+
+$mainBgColor: #282828;
+$textColor: #fff;
+$fontSize: 20px;
+$greenColor: rgb(104, 159, 56);
+$greyColor: rgba(255,255,255,.4);
+
+* {
+  padding: 0px;
+  margin: 0px;
+  border: 0px;
+  cursor: url('./img/free-icon-cursor-10613611.png'), auto;
+
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+
+:focus,
+:active {
+  // outline: none;
+}
+
+a:focus,
+a:active {
+  // outline: none;
+}
+
+html,
+body {
+  height: 100%;
+  min-width: $minWidth + px;
+}
+
+body {
+  color: $textColor;
+  line-height: 1;
+  font-size: $fontSize;
+  //text-rendering: optimizeLegibility;
+  -ms-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+input,
+button,
+textarea {
+  font-size: inherit;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+
+button {
+  cursor: pointer;
+  color: inherit;
+  background-color: inherit;
+}
+
+a {
+  color: inherit;
+}
+
+a:link,
+a:visited {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+ul li {
+  list-style: none;
+}
+
+img {
+  vertical-align: top;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: inherit;
+  font-size: inherit;
+}
+
+
+[class*="__container"] {
+  position: relative;
+  z-index: 2;
+  @if ($maxWidthContainer>0) {
+    max-width: rem($maxWidthContainer);
+    box-sizing: content-box;
+    margin: 0 auto;
+  }
+  @if ($containerPadding>0) {
+    //padding: 0 rem(math.div($containerPadding, 2));
+  }
+}
+[class*="__container_wide"]{
+  max-width: rem(1680);
+  padding: 0 20px;
+
+}
+[class*="__container_first"]{
+  max-width: rem(2440);
+  padding: 0 0;
+
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+
+
+._title{
+  @include adaptiveValue("font-size", 60, 28);
+  line-height: 120%;
+  font-family: "Cormorant Unicase", serif;
+  text-align: center;
+  font-weight: 700;
+}
+
+
+[class*="-ibg"] {
+  position: relative;
+  img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    object-fit: cover;
+
+
+  }
+}
